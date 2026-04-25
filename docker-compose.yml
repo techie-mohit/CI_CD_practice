@@ -1,0 +1,101 @@
+services:
+  app:
+    build:
+      context: .              # ✅ current folder
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+
+
+
+
+# version: "3.9"   # Docker Compose version
+
+# ---------------------------------------------------
+# SERVICES = All containers (frontend, backend, DB)
+# ---------------------------------------------------
+# services:
+
+  # ============================
+  # 🔹 BACKEND (Node.js / Express)
+  # ============================
+  # backend:
+  #   build:
+  #     context: ./backend        # Path to backend folder
+  #     dockerfile: Dockerfile    # Dockerfile for backend
+
+  #   ports:
+  #     - "5000:5000"             # host:container
+
+  #   env_file:
+  #     - ./backend/.env          # Load environment variables
+
+  #   depends_on:
+  #     - mongodb                # Start MongoDB first
+
+  #   restart: unless-stopped     # Auto restart if crash
+
+    # --------------------------
+    # Notes:
+    # - Runs Express server
+    # - Connects to MongoDB
+    # - Uses process.env variables
+    # --------------------------
+
+
+  # ============================
+  # 🔹 FRONTEND (React)
+  # # ============================
+  # frontend:
+  #   build:
+  #     context: ./frontend       # React project folder
+  #     dockerfile: Dockerfile
+
+  #   ports:
+  #     - "3000:3000"
+
+  #   restart: unless-stopped
+
+    # --------------------------
+    # Notes:
+    # - React app runs here
+    # - In production → served by Nginx
+    # - Calls backend API (http://backend:5000)
+    # --------------------------
+
+
+  # ============================
+  # 🔹 DATABASE (MongoDB)
+  # ============================
+  # mongodb:
+  #   image: mongo                # Official MongoDB image
+
+  #   ports:
+  #     - "27017:27017"
+
+  #   volumes:
+  #     - mongo-data:/data/db     # Persist DB data
+
+  #   restart: unless-stopped
+
+    # --------------------------
+    # Notes:
+    # - Stores application data
+    # - Data saved in volume (not lost)
+    # --------------------------
+
+
+# ---------------------------------------------------
+# VOLUMES (Persistent Storage)
+# ---------------------------------------------------
+# volumes:
+#   mongo-data:
+
+  # --------------------------
+  # Notes:
+  # - Prevents data loss when container stops
+  # - Used for MongoDB storage
+  # --------------------------      
