@@ -1,0 +1,130 @@
+name: Basic CI Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Run tests (optional)
+      # - name: Run tests
+      #   run: npm test || echo "No tests"
+
+      # 5. Build Docker image
+      - name: Build Docker image
+        run: docker build -t app .
+
+      # 6. Run container
+      - name: Run container
+        run: docker run -d -p 3000:3000 app
+
+      # 7. Wait for server
+      - name: Wait for app
+        run: sleep 10
+
+      # 8. Test API
+      - name: Test API
+        run: curl http://localhost:3000
+
+
+
+
+# name: MERN CI Pipeline
+
+# on:
+#   push:
+#     branches: [main]
+
+# jobs:
+#   backend:
+#     runs-on: ubuntu-latest
+
+#     services:
+#       mongo:
+#         image: mongo
+#         ports:
+#           - 27017:27017
+
+#     steps:
+#       # 1. Checkout
+#       - uses: actions/checkout@v4
+
+#       # 2. Setup Node
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: 18
+
+#       # 3. Install backend deps
+#       - name: Install backend deps
+#         working-directory: ./backend
+#         run: npm ci
+
+#       # 4. Run backend tests
+#       - name: Test backend
+#         working-directory: ./backend
+#         run: npm test || echo "No backend tests"
+
+#       # 5. Start backend
+#       - name: Run backend
+#         working-directory: ./backend
+#         run: |
+#           npm start &
+#           sleep 10
+
+#       # 6. Test backend API
+#       - name: Test backend API
+#         run: curl http://localhost:5000
+
+#   frontend:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       # 1. Checkout
+#       - uses: actions/checkout@v4
+
+#       # 2. Setup Node
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: 18
+
+#       # 3. Install frontend deps
+#       - name: Install frontend deps
+#         working-directory: ./frontend
+#         run: npm ci
+
+#       # 4. Build frontend
+#       - name: Build frontend
+#         working-directory: ./frontend
+#         run: npm run build
+
+#   docker:
+#     runs-on: ubuntu-latest
+#     needs: [backend, frontend]
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       # Build backend image
+#       - name: Build backend Docker image
+#         run: docker build -t backend ./backend
+
+#       # Build frontend image
+#       - name: Build frontend Docker image
+#         run: docker build -t frontend ./frontend
